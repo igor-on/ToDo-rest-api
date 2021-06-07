@@ -1,6 +1,7 @@
 package com.todo.ToDoApplication.service;
 
 import com.todo.ToDoApplication.exception.InvalidInputException;
+import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.model.Complete;
 import com.todo.ToDoApplication.model.Task;
 import com.todo.ToDoApplication.repository.TaskRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,5 +48,10 @@ public class TaskService {
 
     public List<Task> findAll() {
         return repository.findAll();
+    }
+
+    public void deleteTask(Long id) throws NoDataException {
+        final Optional<Task> byId = repository.findById(id);
+        repository.delete(byId.orElseThrow(() -> new NoDataException("There is no saved task with this id: " + id)));
     }
 }
