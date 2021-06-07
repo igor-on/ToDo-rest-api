@@ -21,7 +21,6 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Null
     private Long id;
     @NotNull
     @NotBlank

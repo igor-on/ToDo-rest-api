@@ -8,6 +8,7 @@ import com.todo.ToDoApplication.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -53,5 +54,15 @@ public class TaskService {
     public void deleteTask(Long id) throws NoDataException {
         final Optional<Task> byId = repository.findById(id);
         repository.delete(byId.orElseThrow(() -> new NoDataException("There is no saved task with this id: " + id)));
+    }
+
+    @Transactional
+    public Task updateToComplete(Long id) throws NoDataException {
+        Task byId =
+                repository.findById(id).orElseThrow(() -> new NoDataException("There is no saved task with this id: " + id));
+
+        System.out.println(byId);
+        byId.setComplete(Complete.YES);
+        return byId;
     }
 }

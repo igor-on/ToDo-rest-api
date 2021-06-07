@@ -49,6 +49,14 @@ public class TaskController {
                 .build();
     }
 
+    @PutMapping("/api/task/{id}")
+    public ResponseEntity<TaskDTO> changeToComplete(@PathVariable("id") Long id) throws NoDataException {
+        final Task updatedTask = service.updateToComplete(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(TaskMapper.mapToTaskDTO(updatedTask));
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = InvalidInputException.class)
     public Error handleException(InvalidInputException e) {
@@ -57,7 +65,7 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NoDataException.class)
-    public Error handleNoDataException(NoDataException e){
+    public Error handleNoDataException(NoDataException e) {
         return new Error(404, e.getMessage(), "/api/task/{id}");
     }
 }
