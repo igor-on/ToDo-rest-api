@@ -1,8 +1,15 @@
 package com.todo.ToDoApplication.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,13 +22,16 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Null
     private Long id;
+    @NotNull
+    @NotBlank
+    @Length(max = 40)
     private String name;
-    @Column(columnDefinition = "ENUM")
     @Enumerated(EnumType.STRING)
-    private Complete complete = Complete.NO;
+    private Complete complete = Complete.YES;
     private LocalDateTime date = LocalDateTime.now();
+    @NotNull
     @ManyToOne
     private TaskList list;
-
 }
