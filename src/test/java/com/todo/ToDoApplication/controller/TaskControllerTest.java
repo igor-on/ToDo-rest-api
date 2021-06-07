@@ -1,6 +1,7 @@
 package com.todo.ToDoApplication.controller;
 
 import com.todo.ToDoApplication.exception.InvalidInputException;
+import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.model.Complete;
 import com.todo.ToDoApplication.model.Task;
 import com.todo.ToDoApplication.model.TaskDTO;
@@ -76,5 +77,12 @@ class TaskControllerTest {
         assertThat(respJson.get(1).getDate()).isEqualTo("2021/06/01, 2:30 PM");
         assertThat(respJson.get(0).getListId()).isEqualTo(2);
         assertThat(respJson.get(1).getListId()).isEqualTo(2);
+    }
+
+    @Test
+    void thatRemoveTaskWorksCorrectly() throws NoDataException {
+        final ResponseEntity actual = controller.removeTask(2L);
+
+        assertThat(actual.getStatusCode().value()).isEqualTo(204);
     }
 }

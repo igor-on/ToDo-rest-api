@@ -2,6 +2,7 @@ package com.todo.ToDoApplication.controller;
 
 import com.todo.ToDoApplication.exception.Error;
 import com.todo.ToDoApplication.exception.InvalidInputException;
+import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.mapper.TaskMapper;
 import com.todo.ToDoApplication.model.Task;
 import com.todo.ToDoApplication.model.TaskDTO;
@@ -40,9 +41,23 @@ public class TaskController {
                 .body(allMapped);
     }
 
+    @DeleteMapping("/api/task/{id}")
+    public ResponseEntity removeTask(@PathVariable("id") Long id) throws NoDataException {
+        service.deleteTask(id);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = InvalidInputException.class)
     public Error handleException(InvalidInputException e) {
         return new Error(HttpStatus.BAD_REQUEST.value(), e.getMessage(), "/api/task");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(value = NoDataException.class)
+    public Error handleNoDataException(NoDataException e){
+        return new Error(404, e.getMessage(), "/api/task/{id}");
     }
 }

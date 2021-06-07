@@ -1,11 +1,13 @@
 package com.todo.ToDoApplication.service;
 
 import com.todo.ToDoApplication.exception.InvalidInputException;
+import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.model.Complete;
 import com.todo.ToDoApplication.model.Task;
 import com.todo.ToDoApplication.model.TaskList;
 import com.todo.ToDoApplication.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +20,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @RequiredArgsConstructor
@@ -128,6 +132,7 @@ class TaskServiceTest {
                 .isExactlyInstanceOf(InvalidInputException.class)
                 .hasMessage("List is invalid");
     }
+
     @Test
     public void testThatAddTaskThrowsExceptionOnInvalidListId() {
         LIST.setId(null);
@@ -141,7 +146,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testThatFindAllWorksCorrectly(){
+    public void testThatFindAllWorksCorrectly() {
         final List<Task> tasks = new ArrayList<>();
         tasks.add(TASK_AFTER_SAVE_IN_DB);
         tasks.add(TASK_AFTER_SAVE_IN_DB);
@@ -152,5 +157,28 @@ class TaskServiceTest {
         assertThat(all)
                 .isNotEmpty()
                 .hasSize(2);
+    }
+
+    @Test
+    public void testThatDeleteTaskWorksCorrectly() throws NoDataException {
+        when(repository.findById(1L)).thenReturn(Optional.ofNullable(TASK_AFTER_SAVE_IN_DB));
+        doNothing().when(repository).delete(any());
+
+        service.deleteTask(1L);
+
+        verify(repository, times(1)).findById(1L);
+        verify(repository, times(1)).delete(any());
+    }
+
+    @Test
+    public void testThatDeleteTaskThrowsException() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        Throwable throwable = Assertions.assertThrows(NoDataException.class, () -> service.deleteTask(1L));
+
+        assertThat(throwable).isExactlyInstanceOf(NoDataException.class)
+        .hasMessage("There is no saved task with this id: " + 1);
+        verify(repository, times(1)).findById(1L);
+        verify(repository, times(0)).delete(any());
     }
 }
