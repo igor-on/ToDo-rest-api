@@ -1,9 +1,6 @@
 package com.todo.ToDoApplication.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -15,8 +12,10 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "things")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
 public class Task {
 
@@ -29,7 +28,7 @@ public class Task {
     @Length(max = 40)
     private String name;
     @Enumerated(EnumType.STRING)
-    private Complete complete = Complete.YES;
+    private Complete complete = Complete.NO;
     private LocalDateTime date = LocalDateTime.now();
     @NotNull
     @ManyToOne

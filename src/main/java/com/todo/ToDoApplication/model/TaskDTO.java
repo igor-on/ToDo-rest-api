@@ -9,9 +9,9 @@ import lombok.ToString;
 @ToString
 public class TaskDTO {
 
-    private String id;
+    private Long id;
     private String name;
     private String complete;
     private String date;
-    private String list_id;
+    private Long listId;
 }

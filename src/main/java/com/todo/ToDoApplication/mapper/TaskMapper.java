@@ -13,11 +13,11 @@ public class TaskMapper {
         String stringDate = date.format(DateTimeFormatter.ofPattern("yyyy/MM/dd, h:mm a"));
 
         return TaskDTO.builder()
-                .id(task.getId().toString())
+                .id(task.getId())
                 .name(task.getName())
                 .complete(task.getComplete().toString())
                 .date(stringDate)
-                .list_id(task.getList().getId().toString())
+                .listId(task.getList().getId())
                 .build();
     }
 }
