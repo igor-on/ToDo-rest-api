@@ -14,6 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,5 +58,23 @@ class TaskControllerTest {
         assertThat(respJson.getComplete()).isEqualTo("NO");
         assertThat(respJson.getDate()).isEqualTo("2021/06/01, 2:30 PM");
         assertThat(respJson.getListId()).isEqualTo(2);
+    }
+
+    @Test
+    public void thatShowTasksWorksCorrectly() {
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(TASK_AFTER_SAVE_IN_DB);
+        tasks.add(TASK_AFTER_SAVE_IN_DB);
+        when(service.findAll()).thenReturn(tasks);
+
+        final ResponseEntity<List<TaskDTO>> actual = controller.showTasks();
+        final List<TaskDTO> respJson = actual.getBody();
+
+        assertThat(actual.getStatusCode().value()).isEqualTo(200);
+        assertThat(respJson.size()).isEqualTo(2);
+        assertThat(respJson.get(0).getDate()).isEqualTo("2021/06/01, 2:30 PM");
+        assertThat(respJson.get(1).getDate()).isEqualTo("2021/06/01, 2:30 PM");
+        assertThat(respJson.get(0).getListId()).isEqualTo(2);
+        assertThat(respJson.get(1).getListId()).isEqualTo(2);
     }
 }

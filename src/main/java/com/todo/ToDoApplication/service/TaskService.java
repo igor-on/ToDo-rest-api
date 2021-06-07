@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,11 +36,15 @@ public class TaskService {
         if (task.getDate().isAfter(LocalDateTime.now()) || task.getDate() == null) {
             throw new InvalidInputException("Date field is invalid");
         }
-        if(task.getList() == null){
+        if (task.getList() == null) {
             throw new InvalidInputException("List is invalid");
         }
-        if(task.getList().getId() == null){
+        if (task.getList().getId() == null) {
             throw new InvalidInputException("Task has to belong to list");
         }
+    }
+
+    public List<Task> findAll() {
+        return repository.findAll();
     }
 }

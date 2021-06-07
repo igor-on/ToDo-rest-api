@@ -16,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -136,5 +138,19 @@ class TaskServiceTest {
         assertThat(throwable)
                 .isExactlyInstanceOf(InvalidInputException.class)
                 .hasMessage("Task has to belong to list");
+    }
+
+    @Test
+    public void testThatFindAllWorksCorrectly(){
+        final List<Task> tasks = new ArrayList<>();
+        tasks.add(TASK_AFTER_SAVE_IN_DB);
+        tasks.add(TASK_AFTER_SAVE_IN_DB);
+        when(repository.findAll()).thenReturn(tasks);
+
+        final List<Task> all = service.findAll();
+
+        assertThat(all)
+                .isNotEmpty()
+                .hasSize(2);
     }
 }
