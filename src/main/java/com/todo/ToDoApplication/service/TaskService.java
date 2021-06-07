@@ -51,6 +51,7 @@ public class TaskService {
         return repository.findAll();
     }
 
+    @Transactional
     public void deleteTask(Long id) throws NoDataException {
         final Optional<Task> byId = repository.findById(id);
         repository.delete(byId.orElseThrow(() -> new NoDataException("There is no saved task with this id: " + id)));
@@ -61,7 +62,6 @@ public class TaskService {
         Task byId =
                 repository.findById(id).orElseThrow(() -> new NoDataException("There is no saved task with this id: " + id));
 
-        System.out.println(byId);
         byId.setComplete(Complete.YES);
         return byId;
     }
