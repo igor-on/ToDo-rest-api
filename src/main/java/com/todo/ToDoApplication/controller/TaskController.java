@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,9 +29,20 @@ public class TaskController {
                 .body(TaskMapper.mapToTaskDTO(addedTask));
     }
 
+    @GetMapping("/api/task")
+    public ResponseEntity<List<TaskDTO>> showTasks() {
+        List<Task> allTasks = service.findAll();
+        List<TaskDTO> allMapped = allTasks.stream()
+                .map(TaskMapper::mapToTaskDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity
+                .status(200)
+                .body(allMapped);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value =  InvalidInputException.class)
-    public Error handleException(InvalidInputException e){
+    @ExceptionHandler(value = InvalidInputException.class)
+    public Error handleException(InvalidInputException e) {
         return new Error(HttpStatus.BAD_REQUEST.value(), e.getMessage(), "/api/task");
     }
 }
