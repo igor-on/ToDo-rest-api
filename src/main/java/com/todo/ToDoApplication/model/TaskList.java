@@ -1,5 +1,6 @@
 package com.todo.ToDoApplication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class TaskList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "list")
     Set<Task> tasks = new HashSet<>();
 }
