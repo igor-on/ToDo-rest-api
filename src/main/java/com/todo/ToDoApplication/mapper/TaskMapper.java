@@ -1,7 +1,7 @@
 package com.todo.ToDoApplication.mapper;
 
-import com.todo.ToDoApplication.model.Task;
-import com.todo.ToDoApplication.model.TaskDTO;
+import com.todo.ToDoApplication.dto.Task;
+import com.todo.ToDoApplication.dto.TaskDTO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

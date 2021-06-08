@@ -1,9 +1,9 @@
 package com.todo.ToDoApplication.mapper;
 
-import com.todo.ToDoApplication.model.Complete;
-import com.todo.ToDoApplication.model.Task;
-import com.todo.ToDoApplication.model.TaskDTO;
-import com.todo.ToDoApplication.model.TaskList;
+import com.todo.ToDoApplication.dto.Complete;
+import com.todo.ToDoApplication.dto.Task;
+import com.todo.ToDoApplication.dto.TaskDTO;
+import com.todo.ToDoApplication.dto.TaskList;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

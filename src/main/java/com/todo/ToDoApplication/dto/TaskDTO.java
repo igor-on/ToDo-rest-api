@@ -1,4 +1,4 @@
-package com.todo.ToDoApplication.model;
+package com.todo.ToDoApplication.dto;
 
 import lombok.Builder;
 import lombok.Getter;

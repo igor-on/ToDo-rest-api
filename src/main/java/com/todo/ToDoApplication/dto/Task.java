@@ -1,4 +1,4 @@
-package com.todo.ToDoApplication.model;
+package com.todo.ToDoApplication.dto;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;

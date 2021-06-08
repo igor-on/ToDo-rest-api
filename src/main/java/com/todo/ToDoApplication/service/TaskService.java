@@ -2,8 +2,8 @@ package com.todo.ToDoApplication.service;
 
 import com.todo.ToDoApplication.exception.InvalidInputException;
 import com.todo.ToDoApplication.exception.NoDataException;
-import com.todo.ToDoApplication.model.Complete;
-import com.todo.ToDoApplication.model.Task;
+import com.todo.ToDoApplication.dto.Complete;
+import com.todo.ToDoApplication.dto.Task;
 import com.todo.ToDoApplication.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

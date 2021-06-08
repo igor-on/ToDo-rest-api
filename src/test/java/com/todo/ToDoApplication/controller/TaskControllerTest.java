@@ -2,10 +2,10 @@ package com.todo.ToDoApplication.controller;
 
 import com.todo.ToDoApplication.exception.InvalidInputException;
 import com.todo.ToDoApplication.exception.NoDataException;
-import com.todo.ToDoApplication.model.Complete;
-import com.todo.ToDoApplication.model.Task;
-import com.todo.ToDoApplication.model.TaskDTO;
-import com.todo.ToDoApplication.model.TaskList;
+import com.todo.ToDoApplication.dto.Complete;
+import com.todo.ToDoApplication.dto.Task;
+import com.todo.ToDoApplication.dto.TaskDTO;
+import com.todo.ToDoApplication.dto.TaskList;
 import com.todo.ToDoApplication.service.TaskService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

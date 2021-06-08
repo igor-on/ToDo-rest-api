@@ -1,4 +1,4 @@
-package com.todo.ToDoApplication.model;
+package com.todo.ToDoApplication.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

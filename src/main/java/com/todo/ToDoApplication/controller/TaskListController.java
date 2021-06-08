@@ -1,6 +1,6 @@
 package com.todo.ToDoApplication.controller;
 
-import com.todo.ToDoApplication.model.TaskList;
+import com.todo.ToDoApplication.dto.TaskList;
 import com.todo.ToDoApplication.service.TaskListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

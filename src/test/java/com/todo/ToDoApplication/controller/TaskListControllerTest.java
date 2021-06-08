@@ -1,7 +1,7 @@
 package com.todo.ToDoApplication.controller;
 
-import com.todo.ToDoApplication.model.Task;
-import com.todo.ToDoApplication.model.TaskList;
+import com.todo.ToDoApplication.dto.Task;
+import com.todo.ToDoApplication.dto.TaskList;
 import com.todo.ToDoApplication.service.TaskListService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

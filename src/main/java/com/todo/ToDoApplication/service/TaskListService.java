@@ -1,6 +1,6 @@
 package com.todo.ToDoApplication.service;
 
-import com.todo.ToDoApplication.model.TaskList;
+import com.todo.ToDoApplication.dto.TaskList;
 import com.todo.ToDoApplication.repository.TaskListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
