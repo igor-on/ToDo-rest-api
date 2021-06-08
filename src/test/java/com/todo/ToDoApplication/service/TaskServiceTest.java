@@ -6,8 +6,6 @@ import com.todo.ToDoApplication.model.Complete;
 import com.todo.ToDoApplication.model.Task;
 import com.todo.ToDoApplication.model.TaskList;
 import com.todo.ToDoApplication.repository.TaskRepository;
-import lombok.RequiredArgsConstructor;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,13 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@RequiredArgsConstructor
 class TaskServiceTest {
 
     private static final String NAME = "Do the cleaning up";
@@ -180,5 +176,31 @@ class TaskServiceTest {
         .hasMessage("There is no saved task with this id: " + 1);
         verify(repository, times(1)).findById(1L);
         verify(repository, times(0)).delete(any());
+    }
+
+    @Test
+    public void testThatUpdateToCompleteWorksCorrectly() throws NoDataException {
+        when(repository.findById(1L)).thenReturn(Optional.of(TASK_AFTER_SAVE_IN_DB));
+
+        final Task actual = service.updateToComplete(1L);
+
+        assertThat(actual.getComplete()).isEqualTo(Complete.YES);
+        assertThat(actual.getComplete()).isNotEqualTo(Complete.NO);
+        assertThat(actual).hasNoNullFieldsOrProperties();
+        assertThat(actual.getId()).isEqualTo(1);
+        assertThat(actual.getName()).isEqualTo(NAME);
+        assertThat(actual.getDate()).isEqualTo(NOW);
+        assertThat(actual.getList().getId()).isEqualTo(2);
+
+    }
+
+    @Test
+    public void testThatUpdateToCompleteThrowsException() {
+        Throwable throwable = Assertions.assertThrows(NoDataException.class, () ->service.updateToComplete(1L));
+
+        assertThat(throwable)
+                .isExactlyInstanceOf(NoDataException.class)
+                .hasMessage("There is no saved task with this id: " + 1);
+        verify(repository, times(1)).findById(1L);
     }
 }

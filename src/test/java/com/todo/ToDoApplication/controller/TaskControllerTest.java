@@ -7,6 +7,7 @@ import com.todo.ToDoApplication.model.Task;
 import com.todo.ToDoApplication.model.TaskDTO;
 import com.todo.ToDoApplication.model.TaskList;
 import com.todo.ToDoApplication.service.TaskService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,6 +46,11 @@ class TaskControllerTest {
         controller = new TaskController(service);
     }
 
+    @AfterEach
+    void set(){
+        TASK_AFTER_SAVE_IN_DB.setComplete(Complete.NO);
+    }
+
     @Test
     public void thatAddTaskWorksCorrectly() throws InvalidInputException {
         final Task validTask = new Task(null, NAME, Complete.NO, NOW, LIST);
@@ -80,9 +86,23 @@ class TaskControllerTest {
     }
 
     @Test
-    void thatRemoveTaskWorksCorrectly() throws NoDataException {
+    public void thatRemoveTaskWorksCorrectly() throws NoDataException {
         final ResponseEntity actual = controller.removeTask(2L);
 
         assertThat(actual.getStatusCode().value()).isEqualTo(204);
+    }
+
+    @Test
+    public void thatChangeToCompleteWorksCorrectly() throws NoDataException {
+        TASK_AFTER_SAVE_IN_DB.setComplete(Complete.YES);
+        when(service.updateToComplete(1L)).thenReturn(TASK_AFTER_SAVE_IN_DB);
+
+        final ResponseEntity<TaskDTO> actual = controller.changeToComplete(1L);
+        final TaskDTO respJson = actual.getBody();
+
+        assertThat(actual.getStatusCode().value()).isEqualTo(200);
+        assertThat(respJson.getComplete()).isNotEqualTo("NO");
+        assertThat(respJson.getComplete()).isEqualTo("YES");
+        assertThat(respJson.getDate()).isEqualTo("2021/06/01, 2:30 PM");
     }
 }
