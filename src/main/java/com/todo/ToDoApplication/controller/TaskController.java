@@ -42,7 +42,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/api/task/{id}")
-    public ResponseEntity removeTask(@PathVariable("id") Long id) throws NoDataException {
+    public ResponseEntity<Void> removeTask(@PathVariable("id") Long id) throws NoDataException {
         service.deleteTask(id);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
