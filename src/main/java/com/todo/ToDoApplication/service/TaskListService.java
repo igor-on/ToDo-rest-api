@@ -1,6 +1,7 @@
 package com.todo.ToDoApplication.service;
 
 import com.todo.ToDoApplication.dto.TaskList;
+import com.todo.ToDoApplication.exception.InvalidInputException;
 import com.todo.ToDoApplication.repository.TaskListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,5 +16,20 @@ public class TaskListService {
 
     public List<TaskList> findAll() {
         return repository.findAll();
+    }
+
+    public TaskList saveList(TaskList list) throws InvalidInputException {
+        checkForExceptions(list);
+
+        return repository.save(list);
+    }
+
+    private void checkForExceptions(TaskList list) throws InvalidInputException {
+        if(list.getId() != null){
+            throw new InvalidInputException("Don't try to mess in DB");
+        }
+        if(list.getName() == null || list.getName().isBlank()){
+            throw new InvalidInputException("List name field is invalid");
+        }
     }
 }
