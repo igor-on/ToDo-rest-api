@@ -3,8 +3,8 @@ package com.todo.ToDoApplication.service;
 import com.todo.ToDoApplication.dto.Task;
 import com.todo.ToDoApplication.dto.TaskList;
 import com.todo.ToDoApplication.exception.InvalidInputException;
+import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.repository.TaskListRepository;
-import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,14 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TaskListServiceTest {
@@ -62,8 +60,6 @@ class TaskListServiceTest {
 
         final TaskList actual = service.saveList(new TaskList(null, "Cleaning up", tasks));
 
-        System.out.println(actual);
-
         assertThat(actual).hasNoNullFieldsOrProperties();
         assertThat(actual.getTasks()).isEmpty();
         assertThat(actual.getName()).isEqualTo("Cleaning up");
@@ -98,5 +94,29 @@ class TaskListServiceTest {
         assertThat(throwable)
                 .isExactlyInstanceOf(InvalidInputException.class)
                 .hasMessage("List name field is invalid");
+    }
+
+    @Test
+    public void thatDeleteListWorksCorrectly() throws NoDataException {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(TASK_LIST));
+        doNothing().when(repository).delete(TASK_LIST);
+
+        service.deleteList(1L);
+
+        verify(repository, times(1)).findById(anyLong());
+        verify(repository, times(1)).delete(TASK_LIST);
+    }
+
+    @Test
+    public void thatDeleteListThrowsException(){
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+
+        Throwable throwable = Assertions.assertThrows(NoDataException.class, () -> service.deleteList(1L));
+
+        assertThat(throwable)
+                .isExactlyInstanceOf(NoDataException.class)
+                .hasMessage("There is no saved list with this id: 1");
+        verify(repository, times(1)).findById(1L);
+        verify(repository, times(0)).delete(any());
     }
 }

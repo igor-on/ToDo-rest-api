@@ -3,6 +3,7 @@ package com.todo.ToDoApplication.controller;
 import com.todo.ToDoApplication.dto.Task;
 import com.todo.ToDoApplication.dto.TaskList;
 import com.todo.ToDoApplication.exception.InvalidInputException;
+import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.service.TaskListService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +19,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +35,7 @@ class TaskListControllerTest {
     private TaskListController controller;
 
     @Test
-    public void thatShowListsWorksCorrectly(){
+    public void thatShowListsWorksCorrectly() {
         List<TaskList> lists = new ArrayList<>();
         lists.add(TASK_LIST);
         lists.add(TASK_LIST);
@@ -48,7 +51,7 @@ class TaskListControllerTest {
     }
 
     @Test
-    public void thatAddListWorkCorrectly() throws InvalidInputException {
+    public void thatAddListWorksCorrectly() throws InvalidInputException {
         when(service.saveList(any())).thenReturn(TASK_LIST);
 
         final ResponseEntity<TaskList> actual = controller.addList(TASK_LIST);
@@ -57,5 +60,15 @@ class TaskListControllerTest {
         assertThat(actual.getBody().getId()).isEqualTo(1);
         assertThat(actual.getBody().getName()).isEqualTo("Cleaning up");
         assertThat(actual.getBody().getTasks()).isEmpty();
+    }
+
+    @Test
+    public void thatRemoveListWorksCorrectly() throws NoDataException {
+        doNothing().when(service).deleteList(anyLong());
+
+        final ResponseEntity<Void> actual = controller.removeList(1L);
+
+        assertThat(actual.getStatusCode().value()).isEqualTo(204);
+        assertThat(actual.getBody()).isEqualTo(null);
     }
 }
