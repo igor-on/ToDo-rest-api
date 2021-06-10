@@ -2,6 +2,7 @@ package com.todo.ToDoApplication.controller;
 
 import com.todo.ToDoApplication.dto.Task;
 import com.todo.ToDoApplication.dto.TaskList;
+import com.todo.ToDoApplication.exception.InvalidInputException;
 import com.todo.ToDoApplication.service.TaskListService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,5 +45,17 @@ class TaskListControllerTest {
         assertThat(actual.getBody().get(0)).hasNoNullFieldsOrProperties();
         assertThat(actual.getBody().get(0).getName()).isEqualTo("Cleaning up");
         assertThat(actual.getBody().get(1)).hasNoNullFieldsOrProperties();
+    }
+
+    @Test
+    public void thatAddListWorkCorrectly() throws InvalidInputException {
+        when(service.saveList(any())).thenReturn(TASK_LIST);
+
+        final ResponseEntity<TaskList> actual = controller.addList(TASK_LIST);
+
+        assertThat(actual.getStatusCode().value()).isEqualTo(201);
+        assertThat(actual.getBody().getId()).isEqualTo(1);
+        assertThat(actual.getBody().getName()).isEqualTo("Cleaning up");
+        assertThat(actual.getBody().getTasks()).isEmpty();
     }
 }
