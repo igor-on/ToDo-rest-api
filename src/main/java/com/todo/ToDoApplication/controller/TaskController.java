@@ -56,16 +56,4 @@ public class TaskController {
                 .status(HttpStatus.OK)
                 .body(TaskMapper.mapToTaskDTO(updatedTask));
     }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = InvalidInputException.class)
-    public Error handleException(InvalidInputException e) {
-        return new Error(HttpStatus.BAD_REQUEST.value(), e.getMessage(), "/api/task");
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(value = NoDataException.class)
-    public Error handleNoDataException(NoDataException e) {
-        return new Error(404, e.getMessage(), "/api/task/{id}");
-    }
 }
