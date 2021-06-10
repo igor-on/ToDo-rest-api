@@ -90,6 +90,7 @@ class TaskControllerTest {
         final ResponseEntity actual = controller.removeTask(2L);
 
         assertThat(actual.getStatusCode().value()).isEqualTo(204);
+        assertThat(actual.getBody()).isEqualTo(null);
     }
 
     @Test
