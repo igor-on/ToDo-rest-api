@@ -1,11 +1,11 @@
 package com.todo.ToDoApplication.controller;
 
+import com.todo.ToDoApplication.dto.Task;
+import com.todo.ToDoApplication.dto.TaskDTO;
 import com.todo.ToDoApplication.exception.Error;
 import com.todo.ToDoApplication.exception.InvalidInputException;
 import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.mapper.TaskMapper;
-import com.todo.ToDoApplication.dto.Task;
-import com.todo.ToDoApplication.dto.TaskDTO;
 import com.todo.ToDoApplication.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
