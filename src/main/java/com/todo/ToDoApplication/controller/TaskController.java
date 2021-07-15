@@ -61,4 +61,13 @@ public class TaskController {
                 .status(HttpStatus.OK)
                 .body(TaskMapper.mapToTaskDTO(updatedTask));
     }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @DeleteMapping("/api/tasks/remove")
+    public ResponseEntity<Void> removeCompleted() {
+        service.deleteAllCompleted();
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
 }

@@ -65,4 +65,9 @@ public class TaskService {
         byId.setComplete(Complete.YES);
         return byId;
     }
+
+    @Transactional
+    public void deleteAllCompleted() {
+        repository.deleteAllByCompleted(Complete.YES);
+    }
 }
