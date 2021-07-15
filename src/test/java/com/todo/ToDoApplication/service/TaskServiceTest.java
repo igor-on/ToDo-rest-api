@@ -1,10 +1,10 @@
 package com.todo.ToDoApplication.service;
 
-import com.todo.ToDoApplication.exception.InvalidInputException;
-import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.dto.Complete;
 import com.todo.ToDoApplication.dto.Task;
 import com.todo.ToDoApplication.dto.TaskList;
+import com.todo.ToDoApplication.exception.InvalidInputException;
+import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.repository.TaskRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,30 +38,33 @@ class TaskServiceTest {
 
     @Mock
     private TaskRepository repository;
+    @Mock
+    private TaskListService listService;
     private TaskService service;
 
     @BeforeEach
     void setUp() {
         LIST.setId(2L);
-        service = new TaskService(repository);
+        service = new TaskService(repository, listService);
     }
 
     @Test
-    public void testThatAddTaskWorksCorrectly() throws InvalidInputException {
+    public void thatAddTaskWorksCorrectly() throws InvalidInputException, NoDataException {
         final Task validTask = new Task(null, NAME, Complete.NO, NOW, LIST);
         when(repository.save(any())).thenReturn(TASK_AFTER_SAVE_IN_DB);
-
+        Set<Task> tasks = new HashSet<>();
+        tasks.add(TASK_AFTER_SAVE_IN_DB);
+        when(listService.findList(anyLong())).thenReturn(new TaskList(2L, "clean", tasks));
         final Task actual = service.addTask(validTask);
 
         assertThat(actual).hasNoNullFieldsOrProperties();
         assertThat(actual.getId()).isEqualTo(1L);
         assertThat(actual).hasFieldOrPropertyWithValue("complete", Complete.NO);
         assertThat(actual.getList().getId()).isNotNull();
-        assertThat(actual.getList().getName()).isNull();
     }
 
     @Test
-    public void testThatAddTaskThrowsExceptionOnGivenId() {
+    public void thatAddTaskThrowsExceptionOnGivenId() {
         final Task invalidTask = new Task(3L, NAME, Complete.NO, NOW, LIST);
 
         Throwable throwable = Assertions.assertThrows(InvalidInputException.class, () -> service.addTask(invalidTask));
@@ -74,7 +75,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testThatAddTaskThrowsExceptionOnNullName() {
+    public void thatAddTaskThrowsExceptionOnNullName() {
         final Task invalidTask = new Task(null, null, Complete.NO, NOW, LIST);
 
         Throwable throwable = Assertions.assertThrows(InvalidInputException.class, () -> service.addTask(invalidTask));
@@ -86,7 +87,7 @@ class TaskServiceTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"    ", ""})
-    public void testThatAddTaskThrowsExceptionOnBlankName(String value) {
+    public void thatAddTaskThrowsExceptionOnBlankName(String value) {
         final Task invalidTask = new Task(null, value, Complete.NO, NOW, LIST);
 
         Throwable throwable = Assertions.assertThrows(InvalidInputException.class, () -> service.addTask(invalidTask));
@@ -97,7 +98,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testThatAddTaskThrowsExceptionOnInvalidCompleteField() {
+    public void thatAddTaskThrowsExceptionOnInvalidCompleteField() {
         final Task invalidTask = new Task(null, NAME, Complete.YES, NOW, LIST);
 
         Throwable throwable = Assertions.assertThrows(InvalidInputException.class, () -> service.addTask(invalidTask));
@@ -108,7 +109,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testThatAddTaskThrowsExceptionOnInvalidDate() {
+    public void thatAddTaskThrowsExceptionOnInvalidDate() {
         final Task invalidTask = new Task(null, NAME, Complete.NO, NOW.plusSeconds(5), LIST);
 
         Throwable throwable = Assertions.assertThrows(InvalidInputException.class, () -> service.addTask(invalidTask));
@@ -119,7 +120,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testThatAddTaskThrowsExceptionOnInvalidList() {
+    public void thatAddTaskThrowsExceptionOnInvalidList() {
         final Task invalidTask = new Task(null, NAME, Complete.NO, NOW, null);
 
         Throwable throwable = Assertions.assertThrows(InvalidInputException.class, () -> service.addTask(invalidTask));
@@ -130,7 +131,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testThatAddTaskThrowsExceptionOnInvalidListId() {
+    public void thatAddTaskThrowsExceptionOnInvalidListId() {
         LIST.setId(null);
         final Task invalidTask = new Task(null, NAME, Complete.NO, NOW, LIST);
 
@@ -142,7 +143,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testThatFindAllWorksCorrectly() {
+    public void thatFindAllWorksCorrectly() {
         final List<Task> tasks = new ArrayList<>();
         tasks.add(TASK_AFTER_SAVE_IN_DB);
         tasks.add(TASK_AFTER_SAVE_IN_DB);
@@ -156,8 +157,11 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testThatDeleteTaskWorksCorrectly() throws NoDataException {
+    public void thatDeleteTaskWorksCorrectly() throws NoDataException {
         when(repository.findById(1L)).thenReturn(Optional.ofNullable(TASK_AFTER_SAVE_IN_DB));
+        Set<Task> tasks = new HashSet<>();
+        tasks.add(TASK_AFTER_SAVE_IN_DB);
+        when(listService.findList(anyLong())).thenReturn(new TaskList(2L, "clean", tasks));
         doNothing().when(repository).delete(any());
 
         service.deleteTask(1L);
@@ -167,7 +171,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testThatDeleteTaskThrowsException() {
+    public void thatDeleteTaskThrowsException() {
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
         Throwable throwable = Assertions.assertThrows(NoDataException.class, () -> service.deleteTask(1L));
@@ -179,7 +183,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testThatUpdateToCompleteWorksCorrectly() throws NoDataException {
+    public void thatUpdateToCompleteWorksCorrectly() throws NoDataException {
         when(repository.findById(1L)).thenReturn(Optional.of(TASK_AFTER_SAVE_IN_DB));
 
         final Task actual = service.updateToComplete(1L);
@@ -191,16 +195,25 @@ class TaskServiceTest {
         assertThat(actual.getName()).isEqualTo(NAME);
         assertThat(actual.getDate()).isEqualTo(NOW);
         assertThat(actual.getList().getId()).isEqualTo(2);
-
     }
 
     @Test
-    public void testThatUpdateToCompleteThrowsException() {
+    public void thatUpdateToCompleteThrowsException() {
         Throwable throwable = Assertions.assertThrows(NoDataException.class, () ->service.updateToComplete(1L));
 
         assertThat(throwable)
                 .isExactlyInstanceOf(NoDataException.class)
                 .hasMessage("There is no saved task with this id: " + 1);
         verify(repository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void thatDeleteAllCompletedWorksCorrectly() {
+        doNothing().when(repository).deleteAllByCompleted(Complete.YES);
+
+        service.deleteAllCompleted();
+
+        verify(repository, times(1)).deleteAllByCompleted(Complete.YES);
+        verifyNoInteractions(listService);
     }
 }

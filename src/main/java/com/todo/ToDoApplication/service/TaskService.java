@@ -1,9 +1,10 @@
 package com.todo.ToDoApplication.service;
 
-import com.todo.ToDoApplication.exception.InvalidInputException;
-import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.dto.Complete;
 import com.todo.ToDoApplication.dto.Task;
+import com.todo.ToDoApplication.dto.TaskList;
+import com.todo.ToDoApplication.exception.InvalidInputException;
+import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,18 +12,22 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository repository;
+    private final TaskListService listService;
 
-    public Task addTask(Task task) throws InvalidInputException {
+    @Transactional
+    public Task addTask(Task task) throws InvalidInputException, NoDataException {
         checkForExceptions(task);
 
-        task.getList().getTasks().add(task);
+        TaskList relatedList = listService.findList(task.getList().getId());
+        relatedList.getTasks().add(task);
+        task.setList(relatedList);
+
         return repository.save(task);
     }
 
@@ -53,8 +58,12 @@ public class TaskService {
 
     @Transactional
     public void deleteTask(Long id) throws NoDataException {
-        final Optional<Task> byId = repository.findById(id);
-        repository.delete(byId.orElseThrow(() -> new NoDataException("There is no saved task with this id: " + id)));
+        final Task taskById = repository.findById(id).orElseThrow(() -> new NoDataException("There is no saved task with this id: " + id));
+
+        TaskList relatedList = listService.findList(taskById.getList().getId());
+        relatedList.getTasks().remove(taskById);
+
+        repository.delete(taskById);
     }
 
     @Transactional
