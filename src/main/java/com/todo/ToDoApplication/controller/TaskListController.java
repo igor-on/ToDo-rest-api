@@ -19,6 +19,7 @@ public class TaskListController {
 
     private final TaskListService service;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/api/list")
     public ResponseEntity<List<TaskList>> showLists(){
         final List<TaskList> all = service.findAll();
@@ -27,6 +28,7 @@ public class TaskListController {
                 .body(all);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/api/list")
     public ResponseEntity<TaskList> addList(@RequestBody @Valid TaskList list) throws InvalidInputException {
         final TaskList addedList = service.saveList(list);
@@ -35,6 +37,7 @@ public class TaskListController {
                 .body(addedList);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/api/list/{id}")
     public ResponseEntity<Void> removeList(@PathVariable Long id) throws NoDataException {
         service.deleteList(id);

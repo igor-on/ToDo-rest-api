@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Error {
 
-    private LocalDateTime dateTime = LocalDateTime.now();
-    private HttpStatus status;
-    private String message = "Something bad has happened";
+    private LocalDateTime timeStamp = LocalDateTime.now();
+    private Integer status;
+    private String error = "Something bad has happened";
 
-    public Error(HttpStatus status, String message) {
-        this.status = status;
-        this.message = message;
+    public Error(HttpStatus status, String error) {
+        this.status = status.value();
+        this.error = error;
     }
 }
