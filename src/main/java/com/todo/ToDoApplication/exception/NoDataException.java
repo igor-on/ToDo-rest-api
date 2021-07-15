@@ -1,0 +1,7 @@
+package com.todo.ToDoApplication.exception;
+
+public class NoDataException extends Exception {
+    public NoDataException(String message) {
+        super(message);
+    }
+}
