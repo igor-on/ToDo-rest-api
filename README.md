@@ -15,7 +15,7 @@ but if you want check data in JSON
 
 * GET `/api/tasks`
 
-#####Example output:
+####Example output:
 
 ```
 [
@@ -37,7 +37,7 @@ but if you want check data in JSON
 ```
 * GET `/api/lists`
 
-#####Example output:
+####Example output:
 
 ```
 [
@@ -69,5 +69,5 @@ git clone https://github.com/igor-on/ToDo-rest-api.git
 
 ### After you clone repository
 
-* You need to create the appropriate tables in mySql data base and add credentials in application.properties file
+* You need to create the appropriate tables in mySql data base and add credentials in *application.properties* file
 
