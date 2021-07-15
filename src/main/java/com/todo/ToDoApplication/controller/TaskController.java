@@ -10,18 +10,20 @@ import com.todo.ToDoApplication.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class TaskController {
 
     private final TaskService service;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/api/task")
     public ResponseEntity<TaskDTO> addTask(@RequestBody @Valid Task task) throws InvalidInputException {
         final Task addedTask = service.addTask(task);
@@ -30,6 +32,7 @@ public class TaskController {
                 .body(TaskMapper.mapToTaskDTO(addedTask));
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/api/task")
     public ResponseEntity<List<TaskDTO>> showTasks() {
         List<Task> allTasks = service.findAll();
@@ -37,10 +40,11 @@ public class TaskController {
                 .map(TaskMapper::mapToTaskDTO)
                 .collect(Collectors.toList());
         return ResponseEntity
-                .status(200)
+                .status(HttpStatus.OK)
                 .body(allMapped);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/api/task/{id}")
     public ResponseEntity<Void> removeTask(@PathVariable("id") Long id) throws NoDataException {
         service.deleteTask(id);
@@ -49,6 +53,7 @@ public class TaskController {
                 .build();
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("/api/task/{id}")
     public ResponseEntity<TaskDTO> changeToComplete(@PathVariable("id") Long id) throws NoDataException {
         final Task updatedTask = service.updateToComplete(id);
