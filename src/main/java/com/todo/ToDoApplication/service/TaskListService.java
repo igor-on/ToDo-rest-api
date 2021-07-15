@@ -20,6 +20,10 @@ public class TaskListService {
         return repository.findAll();
     }
 
+    public TaskList findList(long id) throws NoDataException {
+        return repository.findById(id).orElseThrow(() -> new NoDataException("There is no saved list with this id " + id));
+    }
+
     public TaskList saveList(TaskList list) throws InvalidInputException {
         checkForExceptions(list);
 

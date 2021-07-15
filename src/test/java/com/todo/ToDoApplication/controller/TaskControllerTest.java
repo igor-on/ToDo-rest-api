@@ -21,6 +21,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,12 +48,12 @@ class TaskControllerTest {
     }
 
     @AfterEach
-    void set(){
+    void set() {
         TASK_AFTER_SAVE_IN_DB.setComplete(Complete.NO);
     }
 
     @Test
-    public void thatAddTaskWorksCorrectly() throws InvalidInputException {
+    public void thatAddTaskWorksCorrectly() throws InvalidInputException, NoDataException {
         final Task validTask = new Task(null, NAME, Complete.NO, NOW, LIST);
         when(service.addTask(any())).thenReturn(TASK_AFTER_SAVE_IN_DB);
 
@@ -105,5 +106,14 @@ class TaskControllerTest {
         assertThat(respJson.getComplete()).isNotEqualTo("NO");
         assertThat(respJson.getComplete()).isEqualTo("YES");
         assertThat(respJson.getDate()).isEqualTo("2021/06/01, 2:30 PM");
+    }
+
+    @Test
+    public void thatRemoveCompletedWorksCorrectly() {
+        doNothing().when(service).deleteAllCompleted();
+
+        ResponseEntity<Void> actual = controller.removeCompleted();
+
+        assertThat(actual.getStatusCode().value()).isEqualTo(204);
     }
 }

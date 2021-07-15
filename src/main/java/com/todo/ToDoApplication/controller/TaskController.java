@@ -2,7 +2,6 @@ package com.todo.ToDoApplication.controller;
 
 import com.todo.ToDoApplication.dto.Task;
 import com.todo.ToDoApplication.dto.TaskDTO;
-import com.todo.ToDoApplication.exception.Error;
 import com.todo.ToDoApplication.exception.InvalidInputException;
 import com.todo.ToDoApplication.exception.NoDataException;
 import com.todo.ToDoApplication.mapper.TaskMapper;
@@ -25,7 +24,7 @@ public class TaskController {
 
     @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/api/tasks")
-    public ResponseEntity<TaskDTO> addTask(@RequestBody @Valid Task task) throws InvalidInputException {
+    public ResponseEntity<TaskDTO> addTask(@RequestBody @Valid Task task) throws InvalidInputException, NoDataException {
         final Task addedTask = service.addTask(task);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
