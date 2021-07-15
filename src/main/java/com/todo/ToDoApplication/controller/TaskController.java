@@ -24,7 +24,7 @@ public class TaskController {
     private final TaskService service;
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @PostMapping("/api/task")
+    @PostMapping("/api/tasks")
     public ResponseEntity<TaskDTO> addTask(@RequestBody @Valid Task task) throws InvalidInputException {
         final Task addedTask = service.addTask(task);
         return ResponseEntity
@@ -33,7 +33,7 @@ public class TaskController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @GetMapping("/api/task")
+    @GetMapping("/api/tasks")
     public ResponseEntity<List<TaskDTO>> showTasks() {
         List<Task> allTasks = service.findAll();
         List<TaskDTO> allMapped = allTasks.stream()
@@ -45,7 +45,7 @@ public class TaskController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @DeleteMapping("/api/task/{id}")
+    @DeleteMapping("/api/tasks/{id}")
     public ResponseEntity<Void> removeTask(@PathVariable("id") Long id) throws NoDataException {
         service.deleteTask(id);
         return ResponseEntity
@@ -54,7 +54,7 @@ public class TaskController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @PutMapping("/api/task/{id}")
+    @PutMapping("/api/tasks/{id}")
     public ResponseEntity<TaskDTO> changeToComplete(@PathVariable("id") Long id) throws NoDataException {
         final Task updatedTask = service.updateToComplete(id);
         return ResponseEntity
